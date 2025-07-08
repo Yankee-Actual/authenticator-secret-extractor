@@ -1,76 +1,45 @@
-# 🔐 Authenticator Secret Extractor
+# 2FA OTP Secret Extractor
 
-A lightweight Python toolset to extract OTP (TOTP/HOTP) secrets from QR codes.  
-Supports both:
-- 📦 Google Authenticator bulk export (`otpauth-migration://offline?...`)
-- 🔹 Standard 2FA QR codes (`otpauth://totp/...`)
+This is a lightweight Python utility designed to securely extract OTP secrets from 2FA QR codes. It supports both standard TOTP QR codes and Google Authenticator’s export format. The tool operates fully offline and was built with a focus on privacy, control, and recoverability.
 
-You can just install and securely back up your 2FA secrets for use in password managers like RoboForm, Bitwarden, or multi-device setups.
+## Features
 
----
+- Extract OTP secrets from:
+  - Standard 2FA setup QR codes (`otpauth://totp?...`)
+  - Google Authenticator export QR codes (`otpauth-migration://offline?...`)
+- Completely offline processing (no API calls or cloud sync)
+- Helpful for device loss scenarios or migrating 2FA to a trusted password manager
 
-## 🧰 Included Scripts
+## Use Cases
 
-### `decode_google_qr.py`
-Used to decode **Google Authenticator's multi-account export QR codes**.
+- Backup OTP secrets in secure local storage
+- Migrate OTP tokens to another device or authenticator app
+- Recover account access when the original device is lost
 
-- Input: QR image exported from the Google Authenticator app.
-- Output: Account name, issuer, and OTP secret in Base32 format.
+## Requirements
 
-✅ Handles the protobuf-based format used by Google.
+- Python 3.7+
+- `pyzbar`
+- `Pillow`
+- `protobuf`
 
----
-
-### `extract_from_standard_qr.py`
-Used to decode **individual OTP QR codes** shown during 2FA setup on most sites.
-
-- Input: A standard QR image (e.g., from Okta, GitHub, AWS).
-- Output: Secret key, label (email/username), and issuer.
-
-✅ Works with most QR codes that follow the `otpauth://totp/...` format.
-
----
-
-## 🖥️ Requirements
-
-Install Python dependencies using:
+Install requirements:
 
 ```bash
-pip install pillow pyzbar protobuf
-📌 Additional System Dependency
-You need the ZBar library installed for QR code scanning:
+pip install -r requirements.txt
 
-Windows:
-choco install zbar
-macOS:
-brew install zbar
-Debian/Ubuntu:
-sudo apt install libzbar0
+Usage
+Save your QR code as a qr.png file
 
-How to Use:
-Save your QR screenshot as "qr.png" in the same folder as the script.
+Run the script:
 
-Run the appropriate script depending on the QR type:
+For standard OTP QR codes:
+python extract_standard_qr.py
 
-For Google Authenticator Export QR:
+For Google Authenticator export QR codes:
 python decode_google_qr.py
-For Standard OTP QR:
-python extract_from_standard_qr.py
-The terminal will print the issuer, label (account/email), and the OTP secret.
 
-🧪 Example Output:
-✅ Found 1 account(s):
+The tool will display the extracted secret, issuer, and label.
 
-[1] GitHub - user@example.com
-🔑 Secret: GAXG24DNNZ2W4Y3E...
-
-🔒 Security Warning
-Do NOT share or commit your OTP secrets.
-
-Always store your secrets in an encrypted password manager or secure, offline storage (such as an encrypted USB drive).
-
-This tool is intended for educational or personal backup use only.
-
-📄 License
-This project is licensed under the MIT License.
-Feel free to use, modify, and share responsibly.
+Disclaimer
+This project was built independently using publicly documented formats and open libraries. No third-party code under restrictive licenses was used. It is intended for personal use or education only. Please ensure you handle all extracted secrets securely.
